@@ -1065,9 +1065,12 @@ addImage(Obj& obj,
         image.format = getFormat(extension);
         obj.filenames.push_back(filename);
         if (readImages) {
-            std::string fullFilename = parentPath + filename;
-            if (!readFileContents(fullFilename,
-                                  *(reinterpret_cast<std::vector<char>*>(&image.image)))) {
+            std::string fullFilename = ArGetResolver().Resolve(filename).GetPathString();
+            if (fullFilename.empty()) {
+                TF_WARN("Failed to resolve image file \"%s\"", filename.c_str());
+            }
+            else if (!readFileContents(fullFilename,
+                                       *(reinterpret_cast<std::vector<char>*>(&image.image)))) {
                 TF_WARN("Failed to load image file \"%s\"", fullFilename.c_str());
             }
         }
@@ -1528,7 +1531,12 @@ readObj(Obj& obj, const std::string& filename, bool readImages)
         for (size_t i = 0; i < obj.libraries.size(); i++) {
             ObjMaterialLibrary& library = obj.libraries[i];
             obj.filenames.push_back(library.filename);
-            std::string materialFilename = parentPath + library.filename;
+
+            std::string materialFilename = ArGetResolver().Resolve(library.filename).GetPathString();
+            if (materialFilename.empty()) {
+                TF_WARN("Failed to resolve material file \"%s\"", library.filename.c_str());
+                continue;
+            }
             std::vector<char> materialBuffer;
             if (!readFileContents(materialFilename, materialBuffer)) {
                 TF_WARN("Failed to open material file \"%s\"", materialFilename.c_str());

@@ -1243,6 +1243,7 @@ readObjMtl(Obj& obj,
                 }
             } else {
                 nextSpacedText(p, end, map.filename);
+                boost::algorithm::trim(map.filename);
                 map.image = addImage(obj, map.filename, imageMap, parentPath, readImages);
                 map.defined = map.image != -1;
                 break;
@@ -1421,6 +1422,7 @@ readObjMdl(Obj& obj,
         ++lineCount;
         if (line.empty())
             continue;
+        boost::algorithm::trim_right(line);
         materialName.resize(line.size(), '\0'); // resize guarantees no overflow
         parameter.resize(line.size(), '\0');
         filename.resize(line.size(), '\0');

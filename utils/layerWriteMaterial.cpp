@@ -202,12 +202,12 @@ writeUsdPreviewSurface(WriteSdfContext& ctx,
 {
     SdfPath p;
 
-    // This will create a NodeGraph parent prim for all the shading nodes in this network
-    SdfPath parentPath = createPrimSpec(
-      ctx.sdfData, materialPath, AdobeTokens->UsdPreviewSurface, UsdShadeTokens->NodeGraph);
+    // // This will create a NodeGraph parent prim for all the shading nodes in this network
+    // SdfPath parentPath = createPrimSpec(
+    //   ctx.sdfData, materialPath, AdobeTokens->UsdPreviewSurface, UsdShadeTokens->NodeGraph);
 
     TF_DEBUG_MSG(
-      FILE_FORMAT_UTIL, "layer::write UsdPreviewSurface network %s\n", parentPath.GetText());
+      FILE_FORMAT_UTIL, "layer::write UsdPreviewSurface network %s\n", materialPath.GetText());
 
     InputValues inputValues;
     InputConnections inputConnections;
@@ -217,7 +217,7 @@ writeUsdPreviewSurface(WriteSdfContext& ctx,
         if (!input.isEmpty())
             _setupInput(ctx,
                         materialPath,
-                        parentPath,
+                        materialPath,
                         name,
                         input,
                         stReaderResultPathMap,
@@ -238,7 +238,7 @@ writeUsdPreviewSurface(WriteSdfContext& ctx,
     writeInput(AdobeTokens->clearcoatRoughness, material.clearcoatRoughness);
     writeInput(AdobeTokens->opacity, material.opacity);
     writeInput(AdobeTokens->opacityThreshold, material.opacityThreshold);
-    writeInput(AdobeTokens->displacement, material.displacement);
+    // writeInput(AdobeTokens->displacement, material.displacement);
     writeInput(AdobeTokens->occlusion, material.occlusion);
     writeInput(AdobeTokens->ior, material.ior);
     // If we don't have opacity, but we do have transmission, we wire it into opacity
@@ -248,10 +248,11 @@ writeUsdPreviewSurface(WriteSdfContext& ctx,
 
     // Create UsdPreviewSurface shader
     auto outputPaths = createShader(ctx.sdfData,
-                                    parentPath,
+                                    materialPath,
                                     AdobeTokens->UsdPreviewSurface,
                                     AdobeTokens->UsdPreviewSurface,
-                                    StringVector{ "surface", "displacement" },
+                                    // StringVector{ "surface", "displacement" },
+                                    StringVector{ "surface" },
                                     inputValues,
                                     inputConnections);
 
@@ -261,13 +262,13 @@ writeUsdPreviewSurface(WriteSdfContext& ctx,
         createShaderOutput(
           ctx.sdfData, materialPath, "surface", SdfValueTypeNames->Token, outputPaths[0]);
     }
-    if (outputPaths.size() < 2) {
-        TF_WARN(
-          "Failed to create displacement shader output: Insufficient output paths available.");
-    } else {
-        createShaderOutput(
-          ctx.sdfData, materialPath, "displacement", SdfValueTypeNames->Token, outputPaths[1]);
-    }
+    // if (outputPaths.size() < 2) {
+    //     TF_WARN(
+    //       "Failed to create displacement shader output: Insufficient output paths available.");
+    // } else {
+    //     createShaderOutput(
+    //       ctx.sdfData, materialPath, "displacement", SdfValueTypeNames->Token, outputPaths[1]);
+    // }
 }
 
 void

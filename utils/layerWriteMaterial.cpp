@@ -125,6 +125,45 @@ _createTextureReader(SdfAbstractData* sdfData,
                         inputConnections);
 }
 
+SdfPath
+_createTextureReader(SdfAbstractData* sdfData,
+                     const SdfPath& parentPath,
+                     const TfToken& name,
+                     const Input& input,
+                     const std::string& texturePath,
+                     const SdfPath& stResultPath)
+{
+    // Note, we're setting the texture path directly on this texture reader, which means the
+    // path is duplicated on each texture reader of the same texture for each of the different
+    // sub networks. This is currently needed since some software is not correctly following
+    // connections to resolve input values.
+    // Once that has improved in the ecosystem we could author the asset path once as an
+    // attribute on the material and connect all corresponding texture readers to that attribute
+    // value.
+
+    // Make sure the colorSpace is an empty VtValue if the TfToken for colorspace is empty
+    VtValue colorSpace = input.colorspace.IsEmpty() ? VtValue() : VtValue(input.colorspace);
+
+    InputValues inputValues = { { "fallback", _createFallbackValue(input.value) },
+                                { "file", SdfAssetPath(texturePath) },
+                                { "sourceColorSpace", colorSpace },
+                                { "wrapS", input.wrapS },
+                                { "wrapT", input.wrapT },
+                                { "minFilter", input.minFilter },
+                                { "magFilter", input.magFilter },
+                                { "scale", input.scale },
+                                { "bias", input.bias } };
+    InputConnections inputConnections = { { "st", stResultPath } };
+
+    return createShader(sdfData,
+                        parentPath,
+                        name,
+                        AdobeTokens->UsdUVTexture,
+                        input.channel.GetString(),
+                        inputValues,
+                        inputConnections);
+}
+
 void
 _setupInput(WriteSdfContext& ctx,
             const SdfPath& materialPath,
@@ -177,7 +216,7 @@ _setupInput(WriteSdfContext& ctx,
               ctx.sdfData, parentPath, name.GetString(), input, stReaderResultPath);
 
             SdfPath texResultPath = _createTextureReader(
-              ctx.sdfData, parentPath, name, input, stResultPath, textureConnection);
+              ctx.sdfData, parentPath, name, input, texturePath, stResultPath);
 
             inputConnections.emplace_back(name.GetString(), texResultPath);
         }

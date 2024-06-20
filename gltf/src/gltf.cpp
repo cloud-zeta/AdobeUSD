@@ -130,6 +130,11 @@ CustomWriteImageData(const std::string* basepathString,
     return true;
 }
 
+std::string ExpandFilePath(const std::string& filepath, void* user_data) {
+    // Use the active OpenUSD AssetResolver to expand the file path.
+    return ArGetResolver().Resolve(filepath).GetPathString();
+}
+
 bool
 readGltfFromMemory(tinygltf::Model& gltf,
                    const std::string& baseDir,
@@ -139,6 +144,17 @@ readGltfFromMemory(tinygltf::Model& gltf,
 {
     tinygltf::TinyGLTF loader;
     loader.SetImageLoader(CustomLoadImageData, nullptr);
+
+    tinygltf::FsCallbacks fsCallbacks = {
+        &tinygltf::FileExists,
+        &ExpandFilePath,
+        &tinygltf::ReadWholeFile,
+        &tinygltf::WriteWholeFile,
+        &tinygltf::GetFileSizeInBytes,
+
+        nullptr // Fs callback user data
+    };
+    loader.SetFsCallbacks(fsCallbacks);
 
     std::string err, warn;
     bool result = false;

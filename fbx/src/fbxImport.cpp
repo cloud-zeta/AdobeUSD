@@ -19,6 +19,7 @@ governing permissions and limitations under the License.
 #include <pxr/base/tf/fileUtils.h>
 #include <pxr/base/tf/pathUtils.h>
 #include <pxr/base/tf/stringUtils.h>
+#include <pxr/usd/ar/resolver.h>
 #include <pxr/usd/usdSkel/utils.h>
 #include <usdData.h>
 
@@ -1000,7 +1001,8 @@ importFbxMaterials(ImportFbxContext& ctx)
                          filename.c_str());
             std::string siblingFilename = parentPath + filename;
             if (!TfPathExists(siblingFilename)) {
-                siblingFilename = parentPath + TfGetBaseName(filename);
+                std::string basename = TfGetBaseName(filename);
+                siblingFilename = ArGetResolver().Resolve(basename).GetPathString();
             }
             if (!TfPathExists(siblingFilename)) {
                 TF_WARN("FBX image \"%s\" not found in current path or relative to source file",

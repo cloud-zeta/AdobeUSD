@@ -359,7 +359,7 @@ struct USDFFUTILS_API UsdData
     std::string doc;
     PXR_NS::VtDictionary metadata;
     bool hasAnimations = false;
-    float minTime = std::numeric_limits<int>::max();
+    float minTime = std::numeric_limits<float>::max();
     float maxTime = 0;
     double timeCodesPerSecond = 24;
 

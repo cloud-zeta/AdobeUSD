@@ -1195,7 +1195,7 @@ readObjMtl(Obj& obj,
                         break;
                     }
                 } else if (checkWord(p, end, mm)) {
-                    if (!nextFloat(p, end, map.base) | !nextFloat(p, end, map.gain)) {
+                    if (!nextFloat(p, end, map.base) || !nextFloat(p, end, map.gain)) {
                         TF_WARN("MTL parsing error on line %d, for %s: -mm expects 2 floats",
                                 line,
                                 mapName.c_str());

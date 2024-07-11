@@ -252,6 +252,9 @@ InputTranslator::translateDirect(const Input& in, Input& out, bool intermediate)
         const ImageAsset& asset = mImagesSrc[in.image];
         int imageIndex = -1;
         std::string key = "direct-" + TfGetBaseName(asset.uri);
+        if (asset.image.size() == 0) {
+            TF_WARN("Empty image asset: %s", asset.uri.c_str());
+        }
         const auto& it = mCache.find(key);
         if (it != mCache.end()) {
             imageIndex = it->second;
@@ -839,7 +842,7 @@ InputTranslator::translateOpacity2Transparency(const Input& opacity, Input& tran
             // transparency image
             return translateToSingleAffine("transparency", opacity, -1.0f, 1.0f, transparency, false);
         }
-        
+
     } else {
         translateDirect(opacity, transparency);
     }
@@ -1047,7 +1050,7 @@ const ImageAsset&
 InputTranslator::getImage(int i) const
 {
     static ImageAsset defaultImage;
-    
+
     if (i >= 0 && (size_t)i < mImagesDst.size()) {
         return mImagesDst[i];
     } else {

@@ -221,8 +221,9 @@ readFbx(Fbx& fbx, const std::string& filename, bool onlyMaterials)
     ios->SetBoolProp(IMP_FBX_TEXTURE, true);
     ios->SetBoolProp(IMP_FBX_ANIMATION, !onlyMaterials);
     ios->SetBoolProp(IMP_FBX_MODEL, !onlyMaterials);
-    fbx.loadImages = onlyMaterials;
-
+    // Always load images, otherwise embedded material will have empty material data during
+    // conversion.
+    fbx.loadImages = true;
     if (!importer->Initialize(filename.c_str(), -1, ios)) {
         FbxString error = importer->GetStatus().GetErrorString();
         TF_RUNTIME_ERROR(FILE_FORMAT_FBX,

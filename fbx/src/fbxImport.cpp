@@ -981,6 +981,11 @@ importFbxMaterials(ImportFbxContext& ctx)
         if (fileTexture == nullptr)
             continue;
         std::string filename = fileTexture->GetFileName();
+        if (filename.empty()) {
+            TF_WARN("Texture filename is empty texture name: '%s', relative filename:'%s'",
+                    fileTexture->GetName(), fileTexture->GetRelativeFileName());
+            continue;
+        }
         auto embedded = ctx.fbx->embeddedData.find(filename);
         bool isEmbedded = embedded != ctx.fbx->embeddedData.end();
         if (isEmbedded) {
@@ -1039,6 +1044,10 @@ importFbxMaterials(ImportFbxContext& ctx)
                 }
                 file.seekg(0, file.end);
                 int length = file.tellg();
+                if (length < 0) {
+                    TF_RUNTIME_ERROR("Failed to get file size for \"%s\"", filename.c_str());
+                    continue;
+                }
                 file.seekg(0, file.beg);
                 image.image.resize(length);
                 file.read(reinterpret_cast<char*>(image.image.data()), length);
@@ -1060,8 +1069,9 @@ importFbxMaterials(ImportFbxContext& ctx)
 
         FbxProperty lP =
           FbxSurfaceMaterialUtils::GetProperty(FbxSurfaceMaterial::sShadingModel, material);
-        auto shaderModel = lP.Get<FbxString>().Buffer();
-        TF_DEBUG_MSG(FILE_FORMAT_FBX, " Shader model: %s\n", shaderModel);
+        FbxString shaderModel = lP.Get<FbxString>();
+        TF_DEBUG_MSG(FILE_FORMAT_FBX, " Shader model, valid: %d, name: %s\n",
+                                      lP.IsValid(), shaderModel.Buffer());
 
         // Check for and process the autodesk standard surface representation first before we do
         // anything else as this is handled as a special case
@@ -1102,6 +1112,11 @@ importFbxMaterials(ImportFbxContext& ctx)
 
         FbxSurfaceLambert* lambert = FbxCast<FbxSurfaceLambert>(material);
         FbxSurfacePhong* phong = FbxCast<FbxSurfacePhong>(material);
+
+        if (lambert == nullptr && phong == nullptr) {
+            TF_WARN("Material %s is not a Lambert or Phong material, classId=%s",
+                    um.name.c_str(), material->GetClassId().GetName());
+        }
         if (lambert) {
             importPropTexture(ctx,
                               textures,

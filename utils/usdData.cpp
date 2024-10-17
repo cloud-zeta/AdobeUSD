@@ -280,6 +280,8 @@ getFormat(const std::string& extension)
 
     if (s == "bmp")
         return ImageFormatBmp;
+    else if (s == "dds")
+        return ImageFormatDds;
     else if (s == "exr")
         return ImageFormatExr;
     else if (s == "jpg")
@@ -309,6 +311,8 @@ getFormatExtension(ImageFormat format)
     switch (format) {
         case ImageFormatBmp:
             return "bmp";
+        case ImageFormatDds:
+            return "dds";
         case ImageFormatExr:
             return "exr";
         case ImageFormatJpg:

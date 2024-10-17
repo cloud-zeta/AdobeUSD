@@ -230,6 +230,7 @@ enum USDFFUTILS_API ImageFormat
 {
     ImageFormatUnknown,
     ImageFormatBmp,
+    ImageFormatDds,
     ImageFormatExr,
     ImageFormatJpg,
     ImageFormatPng,

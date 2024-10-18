@@ -1008,6 +1008,12 @@ importFbxMaterials(ImportFbxContext& ctx)
             if (!TfPathExists(siblingFilename)) {
                 std::string basename = TfGetBaseName(filename);
                 siblingFilename = ArGetResolver().Resolve(basename).GetPathString();
+
+                // HACK: Search for the texture in the "Textures" subdirectory of the parent path
+                if (siblingFilename.empty()) {
+                    std::string estimated_path = "Textures/" + basename;
+                    siblingFilename = ArGetResolver().Resolve(estimated_path).GetPathString();
+                }
             }
             if (!TfPathExists(siblingFilename)) {
                 TF_WARN("FBX image \"%s\" not found in current path or relative to source file",

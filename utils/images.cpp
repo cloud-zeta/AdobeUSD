@@ -63,7 +63,16 @@ Image::read(const ImageAsset& imageAsset, int forceChannels)
     config.attribute("oiio:UnassociatedAlpha", 1);
 
     std::string filename = "dummy." + extension;
-    std::unique_ptr<OIIO::ImageInput> input = OIIO::ImageInput::open(filename, &config);
+
+    std::unique_ptr<OIIO::ImageInput> input;
+    if (imageAsset.format == ImageFormatDds) {
+        // Handle DDS format separately. There is a bug in OIIO that prevents passing the
+        // IOMemReader via config.
+        input = OIIO::ImageInput::open(filename, nullptr, &memreader);
+    } else {
+        input = OIIO::ImageInput::open(filename, &config);
+    }
+
     if (!input) {
         return false;
     }

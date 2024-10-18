@@ -646,19 +646,20 @@ InputTranslator::translatePhong2PBR(const Input& diffuseIn,
             Image metallic;
 
             if (mExportImages) {
-                // Whether textures exist or not, first attempt to decode what we can.
-                const ImageAsset& diffAsset =
-                  diffuseIn.image != -1 ? mImagesSrc[diffuseIn.image] : ImageAsset();
-                const ImageAsset& specAsset =
-                  specularIn.image != -1 ? mImagesSrc[specularIn.image] : ImageAsset();
-                const ImageAsset& glossAsset =
-                  glosinessIn.image != -1 ? mImagesSrc[glosinessIn.image] : ImageAsset();
                 Image diffuse;
                 Image specular;
                 Image shininess;
-                GUARD(diffuse.read(diffAsset, 3), "Invalid diffuse image");
-                GUARD(specular.read(specAsset, 3), "Invalid specular image");
-                GUARD(shininess.read(glossAsset, 1), "Invalid gloss image");
+
+                // Whether textures exist or not, first attempt to decode what we can.
+                if (diffuseIn.image != -1) {
+                    GUARD(diffuse.read(mImagesSrc[diffuseIn.image], 3), "Invalid diffuse image");
+                }
+                if (specularIn.image != -1) {
+                    GUARD(specular.read(mImagesSrc[specularIn.image], 3), "Invalid specular image");
+                }
+                if (glosinessIn.image != -1) {
+                    GUARD(shininess.read(mImagesSrc[glosinessIn.image], 1), "Invalid gloss image");
+                }
 
                 // We need to regularize dimensions. Diffuse component has priority.
                 int width = diffuse.width;

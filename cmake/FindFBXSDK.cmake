@@ -102,6 +102,8 @@ if (NOT (DEFINED FBX_COMPILER_SUFFIX))
     endif()
 endif ()
 
+message(STATUS "!!!!!!!!!!!!! FBX_COMPILER_SUFFIX: ${FBX_COMPILER_SUFFIX}")
+
 find_path(FBXSDK_INCLUDE_DIRS fbxsdk.h)
 find_library(FBXSDK_LIBRARY_DEBUG
     NAMES libfbxsdk-md libfbxsdk.a fbxsdk

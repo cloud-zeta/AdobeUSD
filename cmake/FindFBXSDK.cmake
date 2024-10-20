@@ -102,6 +102,8 @@ if (NOT (DEFINED FBX_COMPILER_SUFFIX))
     endif()
 endif ()
 
+message(STATUS "!!!!!!!!!!!!! FBXSDK_ROOT: ${FBXSDK_ROOT}")
+message(STATUS "!!!!!!!!!!!!! CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 message(STATUS "!!!!!!!!!!!!! FBX_COMPILER_SUFFIX: ${FBX_COMPILER_SUFFIX}")
 
 find_path(FBXSDK_INCLUDE_DIRS fbxsdk.h)

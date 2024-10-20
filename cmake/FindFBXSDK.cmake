@@ -108,14 +108,14 @@ message(STATUS "!!!!!!!!!!!!! FBX_COMPILER_SUFFIX: ${FBX_COMPILER_SUFFIX}")
 
 find_path(FBXSDK_INCLUDE_DIRS fbxsdk.h)
 find_library(FBXSDK_LIBRARY_DEBUG
-    NAMES libfbxsdk-md libfbxsdk.a fbxsdk
+    NAMES libfbxsdk.a
     PATH_SUFFIXES
         ${FBX_COMPILER_SUFFIX}/debug
         # ${FBX_COMPILER_SUFFIX}/${FBX_PLATFORM_SUFFIX}/debug
         # ${FBX_COMPILER_SUFFIX}/libstdcpp/debug
 )
 find_library(FBXSDK_LIBRARY_RELEASE
-    NAMES libfbxsdk-md libfbxsdk.a fbxsdk
+    NAMES libfbxsdk.a
     PATH_SUFFIXES
         ${FBX_COMPILER_SUFFIX}/${FBX_PLATFORM_SUFFIX}/release
         ${FBX_COMPILER_SUFFIX}/libstdcpp/release

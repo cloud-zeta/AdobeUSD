@@ -129,6 +129,8 @@ endif()
 
 
 select_library_configurations(FBXSDK)
+
+message(STATUS "!!!!!!!!!! FBXSDK_INCLUDE_DIRS: ${FBXSDK_INCLUDE_DIRS} FBXSDK_LIBRARIES: ${FBXSDK_LIBRARIES}")
 find_package_handle_standard_args(FBXSDK REQUIRED_VARS FBXSDK_INCLUDE_DIRS FBXSDK_LIBRARIES)
 if(FBXSDK_FOUND)
     add_library(fbxsdk::fbxsdk STATIC IMPORTED)

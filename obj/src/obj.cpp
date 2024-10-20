@@ -138,7 +138,7 @@ readFileContents(const std::string& filename, std::vector<char>& buffer)
         return false;
     }
     fseek(file, 0, SEEK_END);
-    int length = ftell(file);
+    long length = ftell(file);
     fseek(file, 0, SEEK_SET);
     buffer.resize(length + 1);
     fread(buffer.data(), length, 1, file);

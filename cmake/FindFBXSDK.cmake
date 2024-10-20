@@ -110,9 +110,9 @@ find_path(FBXSDK_INCLUDE_DIRS fbxsdk.h)
 find_library(FBXSDK_LIBRARY_DEBUG
     NAMES libfbxsdk-md libfbxsdk.a fbxsdk
     PATH_SUFFIXES
-        ${FBX_COMPILER_SUFFIX}/${FBX_PLATFORM_SUFFIX}/debug
-        ${FBX_COMPILER_SUFFIX}/libstdcpp/debug
         ${FBX_COMPILER_SUFFIX}/debug
+        # ${FBX_COMPILER_SUFFIX}/${FBX_PLATFORM_SUFFIX}/debug
+        # ${FBX_COMPILER_SUFFIX}/libstdcpp/debug
 )
 find_library(FBXSDK_LIBRARY_RELEASE
     NAMES libfbxsdk-md libfbxsdk.a fbxsdk
